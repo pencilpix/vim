@@ -359,17 +359,26 @@ call plug#begin('~/.vim/bundle')
   Plug 'scrooloose/nerdtree'
   Plug 'jistr/vim-nerdtree-tabs'
 
+  " 2. status bar
+  Plug 'vim-airline/vim-airline'
+  Plug 'vim-airline/vim-airline-themes'
 
-  " 2. THEME
+
+  " 3. THEME
   Plug 'mhartington/oceanic-next'
 
 
-  " 3. JS and JSX
+  " 4. JS and JSX
   Plug 'pangloss/vim-javascript'
   Plug 'mxw/vim-jsx'
 
-  " 4. html & css/sass/scss
+  " 5. html & css/sass/scss
   Plug 'mattn/emmet-vim', { 'for': ['javascript', 'jsx', 'html', 'css'] }
+
+
+  " 6. LINTERS
+  Plug 'w0rp/ale'
+  Plug 'skywind3000/asyncrun.vim'
 call plug#end()
 
 
@@ -389,7 +398,7 @@ call plug#end()
   let g:nerdtree_tabs_open_on_gui_startup=1
 
 
-  " 2. THEME
+  " 3. THEME
   " *****************************************************************************
   syntax enable
   " for vim 7
@@ -403,7 +412,7 @@ call plug#end()
   colorscheme OceanicNext
 
 
-  " 4. HTML & CSS/SASS/SCSS
+  " 5. HTML & CSS/SASS/SCSS
   " *****************************************************************************
 
   " emmet and support of jsx
@@ -418,4 +427,12 @@ call plug#end()
   \}
   autocmd FileType html,css,javascript,jsx EmmetInstall
 
+
+
+  " 6. LINTERS
+  " *****************************************************************************
+  let g:ale_sign_error = '●' " Less aggressive than the default '>>'
+  let g:ale_sign_warning = '.'
+  let g:ale_lint_on_enter = 0 " Less distracting when opening a new file
+  autocmd BufWritePost *.js AsyncRun -post=checktime ./node_modules/.bin/eslint --fix %
 
