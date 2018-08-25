@@ -358,6 +358,7 @@ call plug#begin('~/.vim/bundle')
   " add tabs and sidebar
   Plug 'scrooloose/nerdtree'
   Plug 'jistr/vim-nerdtree-tabs'
+  Plug 'Yggdroot/indentLine'
 
   " 2. status bar
   Plug 'vim-airline/vim-airline'
@@ -371,6 +372,9 @@ call plug#begin('~/.vim/bundle')
   " 4. JS and JSX
   Plug 'pangloss/vim-javascript'
   Plug 'mxw/vim-jsx'
+  Plug 'posva/vim-vue'
+  Plug 'othree/yajs.vim'
+  "Plug 'othree/es.next.syntax.vim'
 
   " 5. html & css/sass/scss
   Plug 'mattn/emmet-vim', { 'for': ['javascript', 'jsx', 'html', 'css'] }
@@ -379,6 +383,30 @@ call plug#begin('~/.vim/bundle')
   " 6. LINTERS
   Plug 'w0rp/ale'
   Plug 'skywind3000/asyncrun.vim'
+
+
+  " 7. OTHERS
+  Plug 'editorconfig/editorconfig-vim'
+  Plug 'junegunn/vim-easy-align'
+  Plug 'git://github.com/jiangmiao/auto-pairs.git'
+  Plug 'scrooloose/nerdcommenter'
+
+
+  " 4. autocomplete
+  Plug '1995eaton/vim-better-javascript-completion'
+  if has('nvim')
+    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+  else
+    Plug 'Shougo/deoplete.nvim'
+    Plug 'roxma/nvim-yarp'
+    Plug 'roxma/vim-hug-neovim-rpc'
+  endif
+
+" 5. snippets
+  Plug 'Shougo/neosnippet.vim'
+  Plug 'Shougo/neosnippet-snippets'
+  Plug 'Shougo/vimproc.vim'
+  Plug 'honza/vim-snippets'
 call plug#end()
 
 
@@ -435,4 +463,111 @@ call plug#end()
   let g:ale_sign_warning = '.'
   let g:ale_lint_on_enter = 0 " Less distracting when opening a new file
   autocmd BufWritePost *.js AsyncRun -post=checktime ./node_modules/.bin/eslint --fix %
+
+
+  " Use deoplete.
+  " ***************************************************************************
+  let g:deoplete#enable_at_startup = 1
+  let g:echodoc_enable_at_startup=1
+  set splitbelow
+  set completeopt+=noselect
+  set completeopt-=preview
+  autocmd CompleteDone * pclose
+
+  function! Multiple_cursors_before()
+    let b:deoplete_disable_auto_complete=2
+  endfunction
+  function! Multiple_cursors_after()
+    let b:deoplete_disable_auto_complete=0
+  endfunction
+  let g:deoplete#file#enable_buffer_path=1
+
+  "call deoplete#custom#set('buffer', 'mark', 'ℬ')
+  "call deoplete#custom#set('ternjs', 'mark', '')
+  "call deoplete#custom#set('omni', 'mark', '⌾')
+  "call deoplete#custom#set('file', 'mark', 'file')
+  "call deoplete#custom#set('jedi', 'mark', '')
+  "call deoplete#custom#set('typescript', 'mark', '')
+  "call deoplete#custom#set('neosnippet', 'mark', '')
+  "call deoplete#custom#set('typescript',  'rank', 630)
+  "
+  " let g:deoplete#omni_patterns = {}
+  " let g:deoplete#omni_patterns.html = ''
+  function! Preview_func()
+    if &pvw
+      setlocal nonumber norelativenumber
+     endif
+  endfunction
+  autocmd WinEnter * call Preview_func()
+  let g:deoplete#ignore_sources = {}
+  let g:deoplete#ignore_sources._ = ['around']
+
+
+  " SNIPETTS
+  " ***************************************************************************
+  " Enable snipMate compatibility feature.
+  let g:neosnippet#enable_snipmate_compatibility = 1
+  let g:neosnippet#expand_word_boundary = 1
+  imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+  smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+  xmap <C-k>     <Plug>(neosnippet_expand_target)
+
+  " SuperTab like snippets behavior.
+  imap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+  \ "\<Plug>(neosnippet_expand_or_jump)"
+  \: pumvisible() ? "\<C-n>" : "\<TAB>"
+  smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+  \ "\<Plug>(neosnippet_expand_or_jump)"
+  \: "\<TAB>"
+
+
+  " Easy Align
+  " ***************************************************************************
+  nmap ga <Plug>(EasyAlign)
+  xmap ga <Plug>(EasyAlign)
+
+
+
+  " indentLine settings
+  " ***************************************************************************
+  let g:indentLine_char = '⋮'
+  let g:indentLine_first_char = '⋮'
+  let g:indentLine_showFirstIndentLevel = 0
+  let g:indentLine_leadingSpaceChar='·'
+  let g:indentLine_leadingSpaceEnabled=0
+  let g:indentLine_enabled = 1
+  let g:indentLine_color_term = 245
+
+
+
+  " NERD COMMENTER
+  " ***************************************************************************
+  " Add spaces after comment delimiters by default
+  let g:NERDSpaceDelims = 1
+
+  " Use compact syntax for prettified multi-line comments
+  let g:NERDCompactSexyComs = 1
+
+  " Align line-wise comment delimiters flush left instead of following code indentation
+  let g:NERDDefaultAlign = 'left'
+
+  " Set a language to use its alternate delimiters by default
+  let g:NERDAltDelims_java = 1
+
+  " Add your own custom formats or override the defaults
+  " let g:NERDCustomDelimiters = { 'c': { 'left': '/**','right': '*/' } }
+
+  " Allow commenting and inverting empty lines (useful when commenting a region)
+  let g:NERDCommentEmptyLines = 1
+
+  " Enable trimming of trailing whitespace when uncommenting
+  let g:NERDTrimTrailingWhitespace = 1
+
+  " Enable NERDCommenterToggle to check all selected lines is commented or not
+  let g:NERDToggleCheckAllLines = 1
+
+
+  " VUE
+  " ***************************************************************************
+  let g:vue_disable_pre_processors=1
 
