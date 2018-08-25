@@ -367,6 +367,9 @@ call plug#begin('~/.vim/bundle')
   " 3. JS and JSX
   Plug 'pangloss/vim-javascript'
   Plug 'mxw/vim-jsx'
+
+  " 4. html & css/sass/scss
+  Plug 'mattn/emmet-vim', { 'for': ['javascript', 'jsx', 'html', 'css'] }
 call plug#end()
 
 
@@ -398,4 +401,21 @@ call plug#end()
   endif
 
   colorscheme OceanicNext
+
+
+  " 4. HTML & CSS/SASS/SCSS
+  " *****************************************************************************
+
+  " emmet and support of jsx
+  let g:user_emmet_expandabbr_key = "<C-y>"
+  let g:use_emmet_complete_tag = 1
+  imap <expr> <C-y> emmet#expandAbbrIntelligent("\<C-y>")
+
+  let g:user_emmet_settings = {
+  \  'javascript.jsx' : {
+  \      'extends' : 'jsx',
+  \  },
+  \}
+  autocmd FileType html,css,javascript,jsx EmmetInstall
+
 
