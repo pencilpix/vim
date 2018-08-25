@@ -359,6 +359,9 @@ call plug#begin('~/.vim/bundle')
   Plug 'scrooloose/nerdtree'
   Plug 'jistr/vim-nerdtree-tabs'
 
+
+  " 2. THEME
+  Plug 'mhartington/oceanic-next'
 call plug#end()
 
 
@@ -376,3 +379,18 @@ call plug#end()
   " open nerdTree in startup
   let g:nerdtree_tabs_open_on_console_startup=1
   let g:nerdtree_tabs_open_on_gui_startup=1
+
+
+  " 2. THEME
+  " *****************************************************************************
+  syntax enable
+  " for vim 7
+  " set t_Co=256
+
+  " for vim 8
+  if (has("termguicolors"))
+    set termguicolors
+  endif
+
+  colorscheme OceanicNext
+
