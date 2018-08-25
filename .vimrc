@@ -354,6 +354,11 @@ endfunction
 " *****************************************************************************
 
 call plug#begin('~/.vim/bundle')
+  " 1.NERDTREE
+  " add tabs and sidebar
+  Plug 'scrooloose/nerdtree'
+  Plug 'jistr/vim-nerdtree-tabs'
+
 call plug#end()
 
 
@@ -363,3 +368,11 @@ call plug#end()
 " SETTINGS
 " *****************************************************************************
 
+  " 1.NERDTREE
+  " ***************************************************************************
+  map <F2> :NERDTreeTabsToggle<CR>
+  " sidebar width
+  let g:NERDTreeWinSize = 30
+  " open nerdTree in startup
+  let g:nerdtree_tabs_open_on_console_startup=1
+  let g:nerdtree_tabs_open_on_gui_startup=1
