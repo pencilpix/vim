@@ -390,6 +390,7 @@ call plug#begin('~/.vim/bundle')
   Plug 'junegunn/vim-easy-align'
   Plug 'git://github.com/jiangmiao/auto-pairs.git'
   Plug 'scrooloose/nerdcommenter'
+  Plug 'heavenshell/vim-jsdoc'
 
 
   " 4. autocomplete
@@ -570,4 +571,17 @@ call plug#end()
   " VUE
   " ***************************************************************************
   let g:vue_disable_pre_processors=1
+
+
+
+  " JsDoc
+  " ***************************************************************************
+  nmap <silent> <C-l> <Plug>(jsdoc)
+  let g:jsdoc_underscore_private=1
+  let g:jsdoc_input_description=1
+  let g:jsdoc_allow_input_prompt=1
+  let g:jsdoc_enable_es6=1
+  " enable for javascript and angular
+  let g:javascript_plugin_jsdoc = 1
+  let g:javascript_plugin_ngdoc = 1
 
