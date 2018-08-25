@@ -362,6 +362,11 @@ call plug#begin('~/.vim/bundle')
 
   " 2. THEME
   Plug 'mhartington/oceanic-next'
+
+
+  " 3. JS and JSX
+  Plug 'pangloss/vim-javascript'
+  Plug 'mxw/vim-jsx'
 call plug#end()
 
 
