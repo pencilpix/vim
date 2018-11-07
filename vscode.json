@@ -1,0 +1,43 @@
+{
+  "vim.disableAnnoyingNeovimMessage": true,
+  "editor.fontFamily": "Roboto Mono, Menlo, Monaco, 'Courier New', monospace",
+  "editor.tabSize": 2,
+  "editor.renderIndentGuides": false,
+  "editor.renderWhitespace": "all",
+  "editor.fontSize": 14,
+  "editor.fontWeight": "300",
+  "workbench.colorTheme": "Atom One Dark",
+  "editor.minimap.enabled": false,
+  "editor.rulers": [
+      60,
+      80,
+      100
+  ],
+  "eslint.options": {
+      "extensions": [".js", ".vue"]
+  },
+  "workbench.iconTheme": "material-icon-theme",
+  "window.zoomLevel": -1,
+  "workbench.startupEditor": "newUntitledFile",
+  "workbench.colorCustomizations": {
+      "editor.background": "#263238",
+      "editor.foreground": "#EEFFFF",
+      "editor.lineHighlightBackground": "#00000050",
+      "editorWhitespace.foreground": "#757575",
+      
+  },
+
+  "editor.tokenColorCustomizations": {
+      "comments": {
+          "foreground": "#757575",
+          "fontStyle": "none",
+      },
+      "strings": "#ffd74c",
+      "variables": "#697f9d",
+      "functions": "#01ce86",
+  },
+  "material-icon-theme.showUpdateMessage": false,
+  "editor.largeFileOptimizations": false,
+  "diffEditor.ignoreTrimWhitespace": false,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+}
