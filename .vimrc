@@ -354,71 +354,46 @@ endfunction
 " *****************************************************************************
 
 call plug#begin('~/.vim/bundle')
-" 1. general UI utilities
-  "nerdtree
+  " 1.NERDTREE
+  " add tabs and sidebar
   Plug 'scrooloose/nerdtree'
   Plug 'jistr/vim-nerdtree-tabs'
   Plug 'Yggdroot/indentLine'
-  " editor config
-  Plug 'editorconfig/editorconfig-vim'
-  " status bar
+
+  " 2. status bar
   Plug 'vim-airline/vim-airline'
   Plug 'vim-airline/vim-airline-themes'
-  " easy align
-  Plug 'junegunn/vim-easy-align'
-  " closing quotes/braces/brackets ... etc
-  Plug 'git://github.com/jiangmiao/auto-pairs.git'
-  Plug 'cocopon/colorswatch.vim'
 
 
-  " git
-  Plug 'airblade/vim-gitgutter'
-
-
-" Themes
-  Plug 'ayu-theme/ayu-vim'
+  " 3. THEME
   Plug 'mhartington/oceanic-next'
-  Plug 'hzchirs/vim-material'
-  Plug 'tyrannicaltoucan/vim-quantum'
 
 
-" 3. syntax
-  " javascript
-  "Plug 'pangloss/vim-javascript'
+  " 4. JS and JSX
+  Plug 'pangloss/vim-javascript'
+  Plug 'mxw/vim-jsx'
+  Plug 'posva/vim-vue'
   Plug 'othree/yajs.vim'
-  Plug 'othree/es.next.syntax.vim'
-  "Plug 'moll/vim-node'
-  "Plug 'othree/javascript-libraries-syntax.vim'
+  "Plug 'othree/es.next.syntax.vim'
 
-  " docs
+  " 5. html & css/sass/scss
+  Plug 'mattn/emmet-vim', { 'for': ['javascript', 'jsx', 'html', 'css'] }
+
+
+  " 6. LINTERS
+  Plug 'w0rp/ale'
+  Plug 'skywind3000/asyncrun.vim'
+
+
+  " 7. OTHERS
+  Plug 'editorconfig/editorconfig-vim'
+  Plug 'junegunn/vim-easy-align'
+  Plug 'git://github.com/jiangmiao/auto-pairs.git'
+  Plug 'scrooloose/nerdcommenter'
   Plug 'heavenshell/vim-jsdoc'
 
-" comments
-  Plug 'scrooloose/nerdcommenter'
 
-
-  " typescript
-  Plug 'HerringtonDarkholme/yats.vim'
-  Plug 'Quramy/tsuquyomi'
-
-  "vue
-   Plug 'posva/vim-vue'
-
-  " angular
-  Plug 'magarcia/vim-angular2-snippets'
-
-  " css, sass, html
-  Plug 'mattn/emmet-vim'
-  Plug 'hail2u/vim-css3-syntax'
-  Plug 'cakebaker/scss-syntax.vim'
-
-  " other
-  Plug 'vim-scripts/SyntaxComplete'
-  Plug 'elzr/vim-json'
-  Plug 'tpope/vim-markdown'
-
-
-" 4. autocomplete
+  " 4. autocomplete
   Plug '1995eaton/vim-better-javascript-completion'
   if has('nvim')
     Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -433,114 +408,129 @@ call plug#begin('~/.vim/bundle')
   Plug 'Shougo/neosnippet-snippets'
   Plug 'Shougo/vimproc.vim'
   Plug 'honza/vim-snippets'
-
-
-" 6. linters
-  Plug 'w0rp/ale'
-
-" 7 icons
-  Plug 'ryanoasis/vim-devicons'
-
 call plug#end()
+
+
 
 
 " *****************************************************************************
 " SETTINGS
 " *****************************************************************************
 
-" THEME
-" *****************************************************************************
-" setup for theme ayu https://github.com/ayu-theme/ayu-vim
-  set t_Co=256
-  set termguicolors     " enable true colors support
-  " let ayucolor="light"  " for light version of theme
-  "let ayucolor="mirage" " for mirage version of theme
-  let ayucolor="dark"   " for dark version of theme
-  colorscheme ayu
+  " 1.NERDTREE
+  " ***************************************************************************
+  map <F2> :NERDTreeTabsToggle<CR>
+  " sidebar width
+  let g:NERDTreeWinSize = 30
+  " open nerdTree in startup
+  let g:nerdtree_tabs_open_on_console_startup=1
+  let g:nerdtree_tabs_open_on_gui_startup=1
 
 
-" Use deoplete.
-" *****************************************************************************
-let g:deoplete#enable_at_startup = 1
-let g:echodoc_enable_at_startup=1
-set splitbelow
-set completeopt+=noselect
-set completeopt-=preview
-autocmd CompleteDone * pclose
+  " 3. THEME
+  " *****************************************************************************
+  syntax enable
+  " for vim 7
+  " set t_Co=256
 
-function! Multiple_cursors_before()
-  let b:deoplete_disable_auto_complete=2
-endfunction
-function! Multiple_cursors_after()
-  let b:deoplete_disable_auto_complete=0
-endfunction
-let g:deoplete#file#enable_buffer_path=1
+  " for vim 8
+  if (has("termguicolors"))
+    set termguicolors
+  endif
 
-call deoplete#custom#set('buffer', 'mark', 'ℬ')
-call deoplete#custom#set('ternjs', 'mark', '')
-call deoplete#custom#set('omni', 'mark', '⌾')
-call deoplete#custom#set('file', 'mark', 'file')
-call deoplete#custom#set('jedi', 'mark', '')
-call deoplete#custom#set('typescript', 'mark', '')
-call deoplete#custom#set('neosnippet', 'mark', '')
+  colorscheme OceanicNext
 
-call deoplete#custom#set('typescript',  'rank', 630)
-" let g:deoplete#omni_patterns = {}
-" let g:deoplete#omni_patterns.html = ''
-function! Preview_func()
-  if &pvw
-    setlocal nonumber norelativenumber
-   endif
-endfunction
-autocmd WinEnter * call Preview_func()
-let g:deoplete#ignore_sources = {}
-let g:deoplete#ignore_sources._ = ['around']
 
-" let g:deoplete#enable_debug = 1
-" call deoplete#enable_logging('DEBUG', 'deoplete.log')
-" call deoplete#custom#set('typescript', 'debug_enabled', 1)
+  " 5. HTML & CSS/SASS/SCSS
+  " *****************************************************************************
+
+  " emmet and support of jsx
+  let g:user_emmet_expandabbr_key = "<C-y>"
+  let g:use_emmet_complete_tag = 1
+  imap <expr> <C-y> emmet#expandAbbrIntelligent("\<C-y>")
+
+  let g:user_emmet_settings = {
+  \  'javascript.jsx' : {
+  \      'extends' : 'jsx',
+  \  },
+  \}
+  autocmd FileType html,css,javascript,jsx EmmetInstall
 
 
 
-
-" DEV ICONS
-" *****************************************************************************
-let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols = {} " needed
-let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['js'] = ''
-let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['vim'] = ''
-let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['vue'] = ''
-
-
-" SNIPETTS
-" *****************************************************************************
-" Enable snipMate compatibility feature.
-let g:neosnippet#enable_snipmate_compatibility = 1
-let g:neosnippet#expand_word_boundary = 1
-imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-smap <C-k>     <Plug>(neosnippet_expand_or_jump)
-xmap <C-k>     <Plug>(neosnippet_expand_target)
-
-" SuperTab like snippets behavior.
-imap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-\ "\<Plug>(neosnippet_expand_or_jump)"
-\: pumvisible() ? "\<C-n>" : "\<TAB>"
-smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-\ "\<Plug>(neosnippet_expand_or_jump)"
-\: "\<TAB>"
+  " 6. LINTERS
+  " *****************************************************************************
+  let g:ale_sign_error = '●' " Less aggressive than the default '>>'
+  let g:ale_sign_warning = '.'
+  let g:ale_lint_on_enter = 0 " Less distracting when opening a new file
+  autocmd BufWritePost *.js AsyncRun -post=checktime ./node_modules/.bin/eslint --fix %
 
 
-" NERDTREE
-" *****************************************************************************
-map <F2> :NERDTreeTabsToggle<CR>
-" sidebar width
-let g:NERDTreeWinSize = 30
-" open nerdTree in startup
-let g:nerdtree_tabs_open_on_console_startup=1
-let g:nerdtree_tabs_open_on_gui_startup=1
+  " Use deoplete.
+  " ***************************************************************************
+  let g:deoplete#enable_at_startup = 1
+  let g:echodoc_enable_at_startup=1
+  set splitbelow
+  set completeopt+=noselect
+  set completeopt-=preview
+  autocmd CompleteDone * pclose
+
+  function! Multiple_cursors_before()
+    let b:deoplete_disable_auto_complete=2
+  endfunction
+  function! Multiple_cursors_after()
+    let b:deoplete_disable_auto_complete=0
+  endfunction
+  let g:deoplete#file#enable_buffer_path=1
+
+  "call deoplete#custom#set('buffer', 'mark', 'ℬ')
+  "call deoplete#custom#set('ternjs', 'mark', '')
+  "call deoplete#custom#set('omni', 'mark', '⌾')
+  "call deoplete#custom#set('file', 'mark', 'file')
+  "call deoplete#custom#set('jedi', 'mark', '')
+  "call deoplete#custom#set('typescript', 'mark', '')
+  "call deoplete#custom#set('neosnippet', 'mark', '')
+  "call deoplete#custom#set('typescript',  'rank', 630)
+  "
+  " let g:deoplete#omni_patterns = {}
+  " let g:deoplete#omni_patterns.html = ''
+  function! Preview_func()
+    if &pvw
+      setlocal nonumber norelativenumber
+     endif
+  endfunction
+  autocmd WinEnter * call Preview_func()
+  let g:deoplete#ignore_sources = {}
+  let g:deoplete#ignore_sources._ = ['around']
 
 
-" indentLine settings
-" *****************************************************************************
+  " SNIPETTS
+  " ***************************************************************************
+  " Enable snipMate compatibility feature.
+  let g:neosnippet#enable_snipmate_compatibility = 1
+  let g:neosnippet#expand_word_boundary = 1
+  imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+  smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+  xmap <C-k>     <Plug>(neosnippet_expand_target)
+
+  " SuperTab like snippets behavior.
+  imap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+  \ "\<Plug>(neosnippet_expand_or_jump)"
+  \: pumvisible() ? "\<C-n>" : "\<TAB>"
+  smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+  \ "\<Plug>(neosnippet_expand_or_jump)"
+  \: "\<TAB>"
+
+
+  " Easy Align
+  " ***************************************************************************
+  nmap ga <Plug>(EasyAlign)
+  xmap ga <Plug>(EasyAlign)
+
+
+
+  " indentLine settings
+  " ***************************************************************************
   let g:indentLine_char = '⋮'
   let g:indentLine_first_char = '⋮'
   let g:indentLine_showFirstIndentLevel = 0
@@ -550,88 +540,48 @@ let g:nerdtree_tabs_open_on_gui_startup=1
   let g:indentLine_color_term = 245
 
 
-"==========================================================================
-" vue
-"==========================================================================
-" autocmd FileType vue syntax sync fromstart
- let g:used_javascript_libs = 'vue'
- "autocmd BufRead,BufNewFile *.vue setlocal filetype=javascript.html
- "autocmd BufRead,BufNewFile *.vue setlocal filetype=html.javascript.sass
-let g:vue_disable_pre_processors=1
 
-" nerdCommenter hook to fix vue multiple syntaxs
-let g:ft = ''
-function! NERDCommenter_before()
-  if &ft == 'vue'
-    let g:ft = 'vue'
-    let stack = synstack(line('.'), col('.'))
-    if len(stack) > 0
-      let syn = synIDattr((stack)[0], 'name')
-      if len(syn) > 0
-        exe 'setf ' . substitute(tolower(syn), '^vue_', '', '')
-      endif
-    endif
-  endif
-endfunction
-function! NERDCommenter_after()
-  if g:ft == 'vue'
-    setf vue
-    let g:ft = ''
-  endif
-endfunction
+  " NERD COMMENTER
+  " ***************************************************************************
+  " Add spaces after comment delimiters by default
+  let g:NERDSpaceDelims = 1
 
-" linters
-" let g:syntastic_javascript_checkers = ['eslint']
+  " Use compact syntax for prettified multi-line comments
+  let g:NERDCompactSexyComs = 1
 
-" sass lint settings
-" let g:syntastic_sass_checkers=["sasslint"]
-" let g:syntastic_scss_checkers=["sasslint"]
-" let g:sass_lint_config = '~/.sass-lint.yml'
-" \ 'html': ['tidy'],
+  " Align line-wise comment delimiters flush left instead of following code indentation
+  let g:NERDDefaultAlign = 'left'
 
-let g:ale_linters = {
-\ 'typescript': ['tslint'],
-\ 'javascript': ['eslint'],
-\ 'sass': ['sasslint'],
-\ 'scss': ['sasslint'],
-\ 'html': [],
-\}
+  " Set a language to use its alternate delimiters by default
+  let g:NERDAltDelims_java = 1
 
-" let g:ale_linter_aliases = {'vue': ['scss', 'css', 'sass', 'javascript']}
+  " Add your own custom formats or override the defaults
+  " let g:NERDCustomDelimiters = { 'c': { 'left': '/**','right': '*/' } }
 
-let g:ale_lint_on_text_changed = 'never'
-let g:ale_lint_on_enter = 0
+  " Allow commenting and inverting empty lines (useful when commenting a region)
+  let g:NERDCommentEmptyLines = 1
 
-" let g:ale_pattern_options = {
-" \   '.*\.vue$': {'ale_enabled': 0},
-" \}
+  " Enable trimming of trailing whitespace when uncommenting
+  let g:NERDTrimTrailingWhitespace = 1
 
-" enable linters only on save
-" let g:ale_lint_on_text_changed = 'never'
-" let g:ale_lint_on_enter = 0
-
-" JsDoc
-" *****************************************************************************
-nmap <silent> <C-l> <Plug>(jsdoc)
-let g:jsdoc_underscore_private=1
-let g:jsdoc_input_description=1
-let g:jsdoc_allow_input_prompt=1
-let g:jsdoc_enable_es6=1
-" enable for javascript and angular
-let g:javascript_plugin_jsdoc = 1
-let g:javascript_plugin_ngdoc = 1
+  " Enable NERDCommenterToggle to check all selected lines is commented or not
+  let g:NERDToggleCheckAllLines = 1
 
 
-" Easy Align
-" *****************************************************************************
-nmap ga <Plug>(EasyAlign)
-xmap ga <Plug>(EasyAlign)
+  " VUE
+  " ***************************************************************************
+  let g:vue_disable_pre_processors=1
 
 
-" emmet
-" *****************************************************************************
-let g:user_emmet_expandabbr_key = "<C-y>"
-let g:use_emmet_complete_tag = 1
-imap <expr> <C-y> emmet#expandAbbrIntelligent("\<C-y>")
 
+  " JsDoc
+  " ***************************************************************************
+  nmap <silent> <C-l> <Plug>(jsdoc)
+  let g:jsdoc_underscore_private=1
+  let g:jsdoc_input_description=1
+  let g:jsdoc_allow_input_prompt=1
+  let g:jsdoc_enable_es6=1
+  " enable for javascript and angular
+  let g:javascript_plugin_jsdoc = 1
+  let g:javascript_plugin_ngdoc = 1
 
