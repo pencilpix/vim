@@ -25,6 +25,9 @@ filetype indent on
 " Set to auto read when a file is changed from the outside
 set autoread
 
+" fix json double quotes
+set conceallevel=0
+
 " With a map leader it's possible to do extra key combinations
 " like <leader>w saves the current file
   let mapleader = ","
@@ -81,6 +84,8 @@ set autoread
   set novisualbell
   set t_vb=
   set tm=500
+  set noerrorbells visualbell t_vb=
+  autocmd GUIEnter * set visualbell t_vb=
 
 " tabs and spaces
 " Use spaces instead of tabs
@@ -108,7 +113,7 @@ set autoread
 
 " 80 ruler
   " let &colorcolumn="80,".join(range(100,999),",")
-  let &colorcolumn="60,80,100,".join(range(120,999),",")
+  let &colorcolumn="60,80,100"
 
 " enabling line number on load
   set number
@@ -138,13 +143,16 @@ set autoread
   set foldnestmax=10
   set nofoldenable
   set foldlevel=2
+  " nnoremap <space> za
 
 
 " enable syntax
   syntax enable
-  autocmd Syntax js,ts,css,sass,scss,less,php,html,vue setlocal foldmethod=indent
-  autocmd Syntax js,ts,css,sass,scss,less,php,html,vue normal zR
+  autocmd Syntax js,ts,css,sass,scss,less,php,html setlocal foldmethod=indent
+  autocmd Syntax js,ts,css,sass,scss,less,php,html normal zR
 
+  " autocmd Syntax js,ts,css,sass,scss,less,php,html,vue setlocal foldmethod=indent
+  " autocmd Syntax js,ts,css,sass,scss,less,php,html,vue normal zR
 
 
 " current line highlight
@@ -288,6 +296,12 @@ map <leader>q :e ~/buffer<cr>
 map <leader>pp :setlocal paste!<cr>
 
 
+" spilit window and navigation.
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Helper functions
@@ -369,15 +383,24 @@ call plug#begin('~/.vim/bundle')
   Plug 'mhartington/oceanic-next'
 
 
-  " 4. JS and JSX
+  " 4. JS, JSX, VUE and typescript
   Plug 'pangloss/vim-javascript'
   Plug 'mxw/vim-jsx'
-  Plug 'posva/vim-vue'
+  Plug 'leafgarland/typescript-vim'
+  Plug 'Quramy/vim-js-pretty-template'
+
+  " Plug 'posva/vim-vue'
   Plug 'othree/yajs.vim'
+  Plug 'gavocanov/vim-js-indent'
   "Plug 'othree/es.next.syntax.vim'
+  Plug 'HerringtonDarkholme/yats.vim'
+  Plug 'Quramy/tsuquyomi'
 
   " 5. html & css/sass/scss
-  Plug 'mattn/emmet-vim', { 'for': ['javascript', 'jsx', 'html', 'css'] }
+  Plug 'mattn/emmet-vim', { 'for': ['javascript', 'jsx', 'html', 'css', 'scss', 'sass'] }
+
+  Plug 'nvie/vim-flake8'
+  Plug 'kien/ctrlp.vim'
 
 
   " 6. LINTERS
@@ -391,23 +414,30 @@ call plug#begin('~/.vim/bundle')
   Plug 'git://github.com/jiangmiao/auto-pairs.git'
   Plug 'scrooloose/nerdcommenter'
   Plug 'heavenshell/vim-jsdoc'
+  Plug 'vim-scripts/indentpython.vim'
+  Plug 'tmhedberg/SimpylFold'
+
+  Plug 'docker/docker'
 
 
   " 4. autocomplete
   Plug '1995eaton/vim-better-javascript-completion'
-  if has('nvim')
-    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-  else
+  " Plug 'Valloric/YouCompleteMe', { 'do': 'python3 install.py --clang-completer' }
+
+  " if has('nvim')
+  "   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+  " else
     Plug 'Shougo/deoplete.nvim'
     Plug 'roxma/nvim-yarp'
     Plug 'roxma/vim-hug-neovim-rpc'
-  endif
+  " endif
 
 " 5. snippets
   Plug 'Shougo/neosnippet.vim'
   Plug 'Shougo/neosnippet-snippets'
   Plug 'Shougo/vimproc.vim'
   Plug 'honza/vim-snippets'
+  Plug 'joaohkfaria/vim-jest-snippets'
 call plug#end()
 
 
@@ -439,7 +469,7 @@ call plug#end()
   endif
 
   colorscheme OceanicNext
-
+  highlight ColorColumn guibg=#16242b
 
   " 5. HTML & CSS/SASS/SCSS
   " *****************************************************************************
@@ -463,6 +493,7 @@ call plug#end()
   let g:ale_sign_error = '●' " Less aggressive than the default '>>'
   let g:ale_sign_warning = '.'
   let g:ale_lint_on_enter = 0 " Less distracting when opening a new file
+  let g:ale_fix_on_save = 1
   autocmd BufWritePost *.js AsyncRun -post=checktime ./node_modules/.bin/eslint --fix %
 
 
@@ -483,14 +514,14 @@ call plug#end()
   endfunction
   let g:deoplete#file#enable_buffer_path=1
 
-  "call deoplete#custom#set('buffer', 'mark', 'ℬ')
-  "call deoplete#custom#set('ternjs', 'mark', '')
-  "call deoplete#custom#set('omni', 'mark', '⌾')
-  "call deoplete#custom#set('file', 'mark', 'file')
-  "call deoplete#custom#set('jedi', 'mark', '')
-  "call deoplete#custom#set('typescript', 'mark', '')
-  "call deoplete#custom#set('neosnippet', 'mark', '')
-  "call deoplete#custom#set('typescript',  'rank', 630)
+  " call deoplete#custom#set('buffer', 'mark', 'ℬ')
+  " call deoplete#custom#set('ternjs', 'mark', '')
+  " call deoplete#custom#set('omni', 'mark', '⌾')
+  " call deoplete#custom#set('file', 'mark', 'file')
+  " call deoplete#custom#set('jedi', 'mark', '')
+  " call deoplete#custom#set('typescript', 'mark', '')
+  " call deoplete#custom#set('neosnippet', 'mark', '')
+  " call deoplete#custom#set('typescript',  'rank', 630)
   "
   " let g:deoplete#omni_patterns = {}
   " let g:deoplete#omni_patterns.html = ''
@@ -567,10 +598,33 @@ call plug#end()
   " Enable NERDCommenterToggle to check all selected lines is commented or not
   let g:NERDToggleCheckAllLines = 1
 
+  " enable nerd commenter in vuejs
+  " let g:ft = ''
+  " function! NERDCommenter_before()
+  "   if &ft == 'vue'
+  "     let g:ft = 'vue'
+  "     let stack = synstack(line('.'), col('.'))
+  "     if len(stack) > 0
+  "       let syn = synIDattr((stack)[0], 'name')
+  "       if len(syn) > 0
+  "         exe 'setf ' . substitute(tolower(syn), '^vue_', '', '')
+  "       endif
+  "     endif
+  "   endif
+  " endfunction
+  " function! NERDCommenter_after()
+  "   if g:ft == 'vue'
+  "     setf vue
+  "     let g:ft = ''
+  "   endif
+  " endfunction
+
 
   " VUE
   " ***************************************************************************
-  let g:vue_disable_pre_processors=1
+  " let g:vue_disable_pre_processors=1
+  " autocmd BufRead,BufNewFile *.vue setlocal filetype=vue.html.javascript.scss
+  " autocmd FileType vue syntax sync fromstart
 
 
 
@@ -584,4 +638,47 @@ call plug#end()
   " enable for javascript and angular
   let g:javascript_plugin_jsdoc = 1
   let g:javascript_plugin_ngdoc = 1
+
+
+" type script
+  let g:typescript_compiler_binary = 'tsc'
+  let g:typescript_compiler_options = ''
+  autocmd QuickFixCmdPost [^l]* nested cwindow
+  autocmd QuickFixCmdPost    l* nested lwindow
+
+  " template for angular
+  autocmd FileType typescript JsPreTmpl
+  autocmd FileType typescript syn clear foldBraces " For leafgarland/typescript-vim users only. Please see #1 for details.
+
+
+  " indentation for python
+  au BufNewFile,BufRead *.py
+    \ set tabstop=4
+    \ set softtabstop=4
+    \ set shiftwidth=4
+    \ set textwidth=79
+    \ set expandtab
+    \ set autoindent
+    \ set fileformat=unix
+
+  " indentation for js/ts, html, css
+  au BufNewFile,BufRead *.js, *.jsx, *.ts, *.html, *.css, *.sass, *.scss
+    \ set tabstop=2
+    \ set softtabstop=2
+    \ set shiftwidth=2
+
+  " show preview of folded text
+  let g:SimpylFold_docstring_preview=1
+
+
+  " goto definition YouCompleteMe
+  " let g:ycm_autoclose_preview_window_after_completion=1
+  " map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
+
+
+  let python_highlight_all=1
+  syntax on
+
+
+  let NERDTreeIgnore=['\.pyc$', '\~$', '\.git$'] "ignore files in NERDTree
 
