@@ -248,7 +248,7 @@ set conceallevel=0
 vnoremap <silent> gv :call VisualSelection('gv')<CR>
 
 " Open vimgrep and put the cursor in the right position
-map <leader>g :vimgrep // **/*.<left><left><left><left><left><left><left>
+map <leader>f :vimgrep // **/*.<left><left><left><left><left><left><left>
 
 " Vimgreps in the current file
 map <leader><space> :vimgrep // <C-R>%<C-A><right><right><right><right><right><right><right><right><right>
@@ -380,7 +380,13 @@ call plug#begin('~/.vim/bundle')
 
 
   " 3. THEME
+  Plug 'ayu-theme/ayu-vim'
   Plug 'mhartington/oceanic-next'
+  Plug 'hzchirs/vim-material'
+  Plug 'mhartington/oceanic-next'
+  Plug 'tyrannicaltoucan/vim-quantum'
+  Plug 'powerline/powerline', {'rtp': '~/.vim/bundle/powerline/powerline/bindings/vim'}
+
 
 
   " 4. JS, JSX, VUE and typescript
@@ -388,11 +394,12 @@ call plug#begin('~/.vim/bundle')
   Plug 'mxw/vim-jsx'
   Plug 'leafgarland/typescript-vim'
   Plug 'Quramy/vim-js-pretty-template'
+  Plug 'nikvdp/ejs-syntax'
 
   " Plug 'posva/vim-vue'
   Plug 'othree/yajs.vim'
   Plug 'gavocanov/vim-js-indent'
-  "Plug 'othree/es.next.syntax.vim'
+  Plug 'othree/es.next.syntax.vim'
   Plug 'HerringtonDarkholme/yats.vim'
   Plug 'Quramy/tsuquyomi'
 
@@ -400,7 +407,8 @@ call plug#begin('~/.vim/bundle')
   Plug 'mattn/emmet-vim', { 'for': ['javascript', 'jsx', 'html', 'css', 'scss', 'sass'] }
 
   Plug 'nvie/vim-flake8'
-  Plug 'kien/ctrlp.vim'
+  Plug 'gotcha/vimpdb'
+  Plug 'ctrlpvim/ctrlp.vim'
 
 
   " 6. LINTERS
@@ -422,23 +430,27 @@ call plug#begin('~/.vim/bundle')
 
   " 4. autocomplete
   Plug '1995eaton/vim-better-javascript-completion'
-  " Plug 'Valloric/YouCompleteMe', { 'do': 'python3 install.py --clang-completer' }
+  Plug 'ternjs/tern_for_vim', { 'for': 'javascript' }
+  Plug 'Valloric/YouCompleteMe', { 'do': 'python3 install.py --clang-completer --typescript-completer --tern-completer' }
 
   " if has('nvim')
   "   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
   " else
-    Plug 'Shougo/deoplete.nvim'
-    Plug 'roxma/nvim-yarp'
-    Plug 'roxma/vim-hug-neovim-rpc'
+  "   Plug 'Shougo/deoplete.nvim'
+  "   Plug 'roxma/nvim-yarp'
+  "   Plug 'roxma/vim-hug-neovim-rpc'
   " endif
 
-" 5. snippets
+  " 5. snippets
   Plug 'Shougo/neosnippet.vim'
   Plug 'Shougo/neosnippet-snippets'
-  Plug 'Shougo/vimproc.vim'
+  Plug 'Shougo/vimproc.vim', { 'do': 'make' }
   Plug 'honza/vim-snippets'
   Plug 'joaohkfaria/vim-jest-snippets'
-call plug#end()
+  Plug 'tpope/vim-fugitive'
+  Plug 'airblade/vim-gitgutter'
+  Plug 'leafgarland/typescript-vim'
+  call plug#end()
 
 
 
@@ -468,21 +480,37 @@ call plug#end()
     set termguicolors
   endif
 
-  colorscheme OceanicNext
   highlight ColorColumn guibg=#16242b
+  colorscheme OceanicNext
+  let ayucolor="dark"
+  colorscheme ayu
+  " airline
+  " let g:airline#extensions#tabline#enabled = 1
+  " let g:airline_theme = 'powerlineish'
+  " let g:airline#extensions#tabline#left_sep = ' '
+  " let g:airline#extensions#tabline#left_alt_sep = '>'
+  " let g:airline#extensions#tagbar#enabled = 0
+  " let g:airline#extensions#whitespace#enabled = 0
+  " let g:airline#extensions#tabline#enabled = 1
+  " let g:airline#extensions#tabline#show_buffers = 1
+  " let g:airline#extensions#tabline#tab_nr_type = 1
+  " let g:airline#extensions#tabline#formatter = 'unique_tail'
 
   " 5. HTML & CSS/SASS/SCSS
   " *****************************************************************************
 
   " emmet and support of jsx
-  let g:user_emmet_expandabbr_key = "<C-y>"
   let g:use_emmet_complete_tag = 1
+  let g:user_emmet_expandabbr_key = "<C-y>"
   imap <expr> <C-y> emmet#expandAbbrIntelligent("\<C-y>")
 
   let g:user_emmet_settings = {
   \  'javascript.jsx' : {
   \      'extends' : 'jsx',
   \  },
+  \ 'typescript': {
+  \   'extends': 'jsx',
+  \ }
   \}
   autocmd FileType html,css,javascript,jsx EmmetInstall
 
@@ -494,7 +522,7 @@ call plug#end()
   let g:ale_sign_warning = '.'
   let g:ale_lint_on_enter = 0 " Less distracting when opening a new file
   let g:ale_fix_on_save = 1
-  autocmd BufWritePost *.js AsyncRun -post=checktime ./node_modules/.bin/eslint --fix %
+  " autocmd BufWritePost *.js AsyncRun -post=checktime ./node_modules/.bin/eslint --fix %
 
 
   " Use deoplete.
@@ -569,6 +597,7 @@ call plug#end()
   let g:indentLine_leadingSpaceEnabled=0
   let g:indentLine_enabled = 1
   let g:indentLine_color_term = 245
+  autocmd Filetype json let g:indentLine_setConceal = 0
 
 
 
@@ -648,7 +677,7 @@ call plug#end()
 
   " template for angular
   autocmd FileType typescript JsPreTmpl
-  autocmd FileType typescript syn clear foldBraces " For leafgarland/typescript-vim users only. Please see #1 for details.
+  " autocmd FileType typescript syn clear foldBraces " For leafgarland/typescript-vim users only. Please see #1 for details.
 
 
   " indentation for python
@@ -662,17 +691,18 @@ call plug#end()
     \ set fileformat=unix
 
   " indentation for js/ts, html, css
-  au BufNewFile,BufRead *.js, *.jsx, *.ts, *.html, *.css, *.sass, *.scss
-    \ set tabstop=2
-    \ set softtabstop=2
-    \ set shiftwidth=2
+  au BufNewFile,BufRead *.js,*.jsx,*.ts,*.html,*.css,*.sass,*.scss
+    \  set tabstop=2
+    \| set softtabstop=2
+    \| set shiftwidth=2
 
   " show preview of folded text
   let g:SimpylFold_docstring_preview=1
 
 
   " goto definition YouCompleteMe
-  " let g:ycm_autoclose_preview_window_after_completion=1
+  let g:ycm_add_preview_to_completeopt = 1
+  let g:ycm_autoclose_preview_window_after_completion=1
   " map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
 
 
@@ -681,4 +711,24 @@ call plug#end()
 
 
   let NERDTreeIgnore=['\.pyc$', '\~$', '\.git$'] "ignore files in NERDTree
+
+  " CTRLp ignore files in .gitignore
+  let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
+
+  " GOTO = CTRL + ]
+  nnoremap <Leader>g :YcmCompleter GoTo<CR>
+  nnoremap <Leader>] :YcmCompleter GoToDefinitionElseDeclaration<CR>
+  nnoremap <Leader>d :tab split \|YcmCompleter GoToDefinitionElseDeclaration<CR>
+  autocmd FileType javascript setlocal omnifunc=tern#Complete
+
+
+
+
+  "tsuquyomi tooltip info
+  autocmd FileType typescript nmap <buffer> <Leader>t : <C-u>echo tsuquyomi#hint()<CR>
+  nnoremap <Leader>u :TsuImport<CR>
+  let g:tsuquyomi_single_quote_import=1
+  let g:ycm_auto_trigger = 1
+
+
 
